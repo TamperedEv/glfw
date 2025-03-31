@@ -2,7 +2,6 @@
 
 [![Build status](https://github.com/glfw/glfw/actions/workflows/build.yml/badge.svg)](https://github.com/glfw/glfw/actions)
 [![Build status](https://ci.appveyor.com/api/projects/status/0kf0ct9831i5l6sp/branch/master?svg=true)](https://ci.appveyor.com/project/elmindreda/glfw)
-[![Coverity Scan](https://scan.coverity.com/projects/4884/badge.svg)](https://scan.coverity.com/projects/glfw-glfw)
 
 ## Introduction
 
@@ -123,33 +122,12 @@ information on what to include when reporting a bug.
 
 ## Changelog
 
- - [Win32] Bugfix: A window created maximized and undecorated would cover the whole
-   monitor (#1806)
- - [Win32] Bugfix: The default restored window position was lost when creating a maximized
-   window
- - [Win32] Bugfix: `glfwMaximizeWindow` would make a hidden window visible
- - [Cocoa] Bugfix: `kUTTypeURL` was deprecated in macOS 12.0 (#2003)
- - [X11] Bugfix: Dynamic loading on OpenBSD failed due to soname differences
- - [X11] Bugfix: Waiting for events would fail if file descriptor was too large
-   (#2024)
- - [X11] Bugfix: Joystick events could lead to busy-waiting (#1872)
- - [X11] Bugfix: `glfwWaitEvents*` did not continue for joystick events
- - [X11] Bugfix: `glfwPostEmptyEvent` could be ignored due to race condition
-   (#379,#1281,#1285,#2033)
- - [X11] Bugfix: Dynamic loading on NetBSD failed due to soname differences
- - [X11] Bugfix: Left shift of int constant relied on undefined behavior (#1951)
- - [Wayland] Added support for key names via xkbcommon
- - [Wayland] Bugfix: Key repeat could lead to a race condition (#1710)
- - [Wayland] Bugfix: Activating a window would emit two input focus events
- - [Wayland] Bugfix: Disable key repeat mechanism when window loses input focus
- - [Wayland] Bugfix: Window hiding and showing did not work (#1492,#1731)
- - [Wayland] Bugfix: A key being repeated was not released when window lost focus
- - [Wayland] Bugfix: Showing a hidden window did not emit a window refresh event
- - [Wayland] Bugfix: Full screen window creation did not ignore `GLFW_VISIBLE`
- - [Wayland] Bugfix: Some keys were reported as wrong key or `GLFW_KEY_UNKNOWN`
- - [Wayland] Bugfix: Text input did not repeat along with key repeat
- - [Wayland] Bugfix: `glfwPostEmptyEvent` sometimes had no effect (#1520,#1521)
- - [GLX] Bugfix: Context creation failed if GLX 1.4 was not exported by GLX library
+ - Bugfix: `glfwGetKeyName` emitted `GLFW_INVALID_VALUE` for scancodes with no
+   key token (#1785,#2214)
+ - [Wayland] Bugfix: Terminating the library before showing a window could segfault
+ - [Wayland] Bugfix: Compilation failed on FreeBSD (#2445)
+ - [Linux] Bugfix: `regfree´ was called on invalid data (#2464)
+ - [WGL] Bugfix: Context creation failed in Parallels VM (#2191,#2406,#2467)
 
 
 ## Contact
@@ -158,13 +136,12 @@ On [glfw.org](https://www.glfw.org/) you can find the latest version of GLFW, as
 well as news, documentation and other information about the project.
 
 If you have questions related to the use of GLFW, we have a
-[forum](https://discourse.glfw.org/), and the `#glfw` IRC channel on
-[Libera.Chat](https://libera.chat/).
+[forum](https://discourse.glfw.org/).
 
 If you have a bug to report, a patch to submit or a feature you'd like to
 request, please file it in the
 [issue tracker](https://github.com/glfw/glfw/issues) on GitHub.
 
 Finally, if you're interested in helping out with the development of GLFW or
-porting it to your favorite platform, join us on the forum, GitHub or IRC.
+porting it to your favorite platform, join us on the forum or GitHub.
 
