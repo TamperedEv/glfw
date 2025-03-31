@@ -28,6 +28,7 @@
 //
 //========================================================================
 
+#define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
@@ -197,6 +198,7 @@ int main(void)
         exit(EXIT_FAILURE);
 
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+    glfwWindowHint(GLFW_WIN32_KEYBOARD_MENU, GLFW_TRUE);
     
     glfwSetJoystickAxisCallback(axis_callback);
     glfwSetJoystickButtonCallback(button_callback);
@@ -360,3 +362,4 @@ int main(void)
     glfwTerminate();
     exit(EXIT_SUCCESS);
 }
+
