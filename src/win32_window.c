@@ -2006,6 +2006,13 @@ void _glfwPlatformPollEvents(void)
     MSG msg;
     HWND handle;
     _GLFWwindow* window;
+    
+    int jid;
+    for (jid = 0;  jid <= GLFW_JOYSTICK_LAST;  jid++)
+    {
+        if (_glfw.joysticks[jid].present)
+            _glfwPlatformPollJoystick(&_glfw.joysticks[jid], _GLFW_POLL_ALL);
+    }
 
     while (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE))
     {

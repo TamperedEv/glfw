@@ -168,6 +168,21 @@ static void hat_widget(struct nk_context* nk, unsigned char state)
     }
 }
 
+void axis_callback(int jid, int axis, float value)
+{
+    printf("jid=%-3d axis=%-3d value=%.2f\n",jid,axis,value);
+}
+
+void button_callback(int jid, int button, int value)
+{
+    printf("jid=%-3d button=%-3d value=%d\n",jid,button,value);
+}
+
+void hat_callback(int jid, int hat, int value)
+{
+    printf("jid=%-3d hat=%-3d value=%d\n",jid,hat,value);
+}
+
 int main(void)
 {
     int jid, hat_buttons = GLFW_FALSE;
@@ -182,6 +197,10 @@ int main(void)
         exit(EXIT_FAILURE);
 
     glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+    
+    glfwSetJoystickAxisCallback(axis_callback);
+    glfwSetJoystickButtonCallback(button_callback);
+    glfwSetJoystickHatCallback(hat_callback);
 
     window = glfwCreateWindow(800, 600, "Joystick Test", NULL, NULL);
     if (!window)
@@ -335,10 +354,9 @@ int main(void)
         nk_glfw3_render(NK_ANTI_ALIASING_ON);
 
         glfwSwapBuffers(window);
-        glfwPollEvents();
+        glfwWaitEvents();
     }
 
     glfwTerminate();
     exit(EXIT_SUCCESS);
 }
-

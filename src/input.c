@@ -368,14 +368,28 @@ void _glfwInputJoystick(_GLFWjoystick* js, int event)
 //
 void _glfwInputJoystickAxis(_GLFWjoystick* js, int axis, float value)
 {
-    js->axes[axis] = value;
+    const int jid = (int) (js - _glfw.joysticks);
+
+    if (js->axes[axis] != value)
+    {
+        js->axes[axis] = value;
+        if (_glfw.callbacks.joystickAxis)
+            _glfw.callbacks.joystickAxis(jid, axis, value);
+    }
 }
 
 // Notifies shared code of the new value of a joystick button
 //
 void _glfwInputJoystickButton(_GLFWjoystick* js, int button, char value)
 {
-    js->buttons[button] = value;
+    const int jid = (int) (js - _glfw.joysticks);
+
+    if (js->buttons[button] != value)
+    {
+        js->buttons[button] = value;
+        if (_glfw.callbacks.joystickButton)
+            _glfw.callbacks.joystickButton(jid, button, value);
+    }
 }
 
 // Notifies shared code of the new value of a joystick hat
@@ -383,13 +397,19 @@ void _glfwInputJoystickButton(_GLFWjoystick* js, int button, char value)
 void _glfwInputJoystickHat(_GLFWjoystick* js, int hat, char value)
 {
     const int base = js->buttonCount + hat * 4;
+    const int jid = (int) (js - _glfw.joysticks);
 
-    js->buttons[base + 0] = (value & 0x01) ? GLFW_PRESS : GLFW_RELEASE;
-    js->buttons[base + 1] = (value & 0x02) ? GLFW_PRESS : GLFW_RELEASE;
-    js->buttons[base + 2] = (value & 0x04) ? GLFW_PRESS : GLFW_RELEASE;
-    js->buttons[base + 3] = (value & 0x08) ? GLFW_PRESS : GLFW_RELEASE;
+    if (js->hats[hat] != value)
+    {
+        _glfwInputJoystickButton(js,base+0,(value & 0x01) ? GLFW_PRESS : GLFW_RELEASE);
+        _glfwInputJoystickButton(js,base+1,(value & 0x02) ? GLFW_PRESS : GLFW_RELEASE);
+        _glfwInputJoystickButton(js,base+2,(value & 0x04) ? GLFW_PRESS : GLFW_RELEASE);
+        _glfwInputJoystickButton(js,base+3,(value & 0x08) ? GLFW_PRESS : GLFW_RELEASE);
 
-    js->hats[hat] = value;
+        js->hats[hat] = value;
+        if (_glfw.callbacks.joystickHat)
+            _glfw.callbacks.joystickHat(jid, hat, value);
+    }
 }
 
 
@@ -937,10 +957,8 @@ GLFWAPI int glfwJoystickPresent(int jid)
     }
 
     js = _glfw.joysticks + jid;
-    if (!js->present)
-        return GLFW_FALSE;
 
-    return _glfwPlatformPollJoystick(js, _GLFW_POLL_PRESENCE);
+    return js->present;
 }
 
 GLFWAPI const float* glfwGetJoystickAxes(int jid, int* count)
@@ -963,9 +981,6 @@ GLFWAPI const float* glfwGetJoystickAxes(int jid, int* count)
 
     js = _glfw.joysticks + jid;
     if (!js->present)
-        return NULL;
-
-    if (!_glfwPlatformPollJoystick(js, _GLFW_POLL_AXES))
         return NULL;
 
     *count = js->axisCount;
@@ -992,9 +1007,6 @@ GLFWAPI const unsigned char* glfwGetJoystickButtons(int jid, int* count)
 
     js = _glfw.joysticks + jid;
     if (!js->present)
-        return NULL;
-
-    if (!_glfwPlatformPollJoystick(js, _GLFW_POLL_BUTTONS))
         return NULL;
 
     if (_glfw.hints.init.hatButtons)
@@ -1027,9 +1039,6 @@ GLFWAPI const unsigned char* glfwGetJoystickHats(int jid, int* count)
     if (!js->present)
         return NULL;
 
-    if (!_glfwPlatformPollJoystick(js, _GLFW_POLL_BUTTONS))
-        return NULL;
-
     *count = js->hatCount;
     return js->hats;
 }
@@ -1053,9 +1062,6 @@ GLFWAPI const char* glfwGetJoystickName(int jid)
     if (!js->present)
         return NULL;
 
-    if (!_glfwPlatformPollJoystick(js, _GLFW_POLL_PRESENCE))
-        return NULL;
-
     return js->name;
 }
 
@@ -1076,9 +1082,6 @@ GLFWAPI const char* glfwGetJoystickGUID(int jid)
 
     js = _glfw.joysticks + jid;
     if (!js->present)
-        return NULL;
-
-    if (!_glfwPlatformPollJoystick(js, _GLFW_POLL_PRESENCE))
         return NULL;
 
     return js->guid;
@@ -1120,6 +1123,27 @@ GLFWAPI GLFWjoystickfun glfwSetJoystickCallback(GLFWjoystickfun cbfun)
 {
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP_POINTERS(_glfw.callbacks.joystick, cbfun);
+    return cbfun;
+}
+
+GLFWAPI GLFWjoyaxisfun glfwSetJoystickAxisCallback(GLFWjoyaxisfun cbfun)
+{
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+    _GLFW_SWAP_POINTERS(_glfw.callbacks.joystickAxis, cbfun);
+    return cbfun;
+}
+
+GLFWAPI GLFWjoybuttonfun glfwSetJoystickButtonCallback(GLFWjoybuttonfun cbfun)
+{
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+    _GLFW_SWAP_POINTERS(_glfw.callbacks.joystickButton, cbfun);
+    return cbfun;
+}
+
+GLFWAPI GLFWjoyhatfun glfwSetJoystickHatCallback(GLFWjoyhatfun cbfun)
+{
+    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
+    _GLFW_SWAP_POINTERS(_glfw.callbacks.joystickHat, cbfun);
     return cbfun;
 }
 
@@ -1202,9 +1226,6 @@ GLFWAPI int glfwJoystickIsGamepad(int jid)
     if (!js->present)
         return GLFW_FALSE;
 
-    if (!_glfwPlatformPollJoystick(js, _GLFW_POLL_PRESENCE))
-        return GLFW_FALSE;
-
     return js->mapping != NULL;
 }
 
@@ -1225,9 +1246,6 @@ GLFWAPI const char* glfwGetGamepadName(int jid)
 
     js = _glfw.joysticks + jid;
     if (!js->present)
-        return NULL;
-
-    if (!_glfwPlatformPollJoystick(js, _GLFW_POLL_PRESENCE))
         return NULL;
 
     if (!js->mapping)
@@ -1257,9 +1275,6 @@ GLFWAPI int glfwGetGamepadState(int jid, GLFWgamepadstate* state)
 
     js = _glfw.joysticks + jid;
     if (!js->present)
-        return GLFW_FALSE;
-
-    if (!_glfwPlatformPollJoystick(js, _GLFW_POLL_ALL))
         return GLFW_FALSE;
 
     if (!js->mapping)

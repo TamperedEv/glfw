@@ -60,4 +60,3 @@ typedef struct _GLFWlibraryLinux
 GLFWbool _glfwInitJoysticksLinux(void);
 void _glfwTerminateJoysticksLinux(void);
 void _glfwDetectJoystickConnectionLinux(void);
-

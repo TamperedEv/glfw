@@ -1642,6 +1642,60 @@ typedef void (* GLFWmonitorfun)(GLFWmonitor* monitor, int event);
  */
 typedef void (* GLFWjoystickfun)(int jid, int event);
 
+/*! @brief The function signature for joystick axis callbacks.
+ *
+ *  This is the function signature for joystick axis callback
+ *  functions.
+ *
+ *  @param[in] jid The joystick id.
+ *  @param[in] axis The axis id.
+ *  @param[in] value The axis position.
+ *
+ *  @sa @ref joystick_axis_event
+ *  @sa @ref glfwSetJoystickAxisCallback
+ *
+ *  @since Added in version 3.3cwb.
+ *
+ *  @ingroup input
+ */
+typedef void (* GLFWjoyaxisfun)(int,int,float);
+
+/*! @brief The function signature for joystick button callbacks.
+ *
+ *  This is the function signature for joystick button callback
+ *  functions.
+ *
+ *  @param[in] jid The joystick id.
+ *  @param[in] axis The button id.
+ *  @param[in] value The button state, one of 0 (up) or 1 (down).
+ *
+ *  @sa @ref joystick_button_event
+ *  @sa @ref glfwSetJoystickButtonCallback
+ *
+ *  @since Added in version 3.3cwb.
+ *
+ *  @ingroup input
+ */
+typedef void (* GLFWjoybuttonfun)(int,int,int);
+
+/*! @brief The function signature for joystick hat callbacks.
+ *
+ *  This is the function signature for joystick hat callback
+ *  functions.
+ *
+ *  @param[in] jid The joystick id.
+ *  @param[in] axis The hat id.
+ *  @param[in] value The hat state, one of GLFW_HAT_*.
+ *
+ *  @sa @ref joystick_hat_event
+ *  @sa @ref glfwSetJoystickButtonCallback
+ *
+ *  @since Added in version 3.3cwb.
+ *
+ *  @ingroup input
+ */
+typedef void (* GLFWjoyhatfun)(int,int,int);
+
 /*! @brief Video mode type.
  *
  *  This describes a single video mode.
@@ -5183,6 +5237,85 @@ GLFWAPI int glfwJoystickIsGamepad(int jid);
  */
 GLFWAPI GLFWjoystickfun glfwSetJoystickCallback(GLFWjoystickfun callback);
 
+/*! @brief Sets the joystick axis callback.
+ *
+ *  This function sets the joystick axis callback, or removes the currently
+ *  set callback.  This is called when a joystick axis is moved.
+ *
+ *  For joystick axis events to be delivered on all platforms, you need to
+ *  call one of the [event processing](@ref events) functions, or query the
+ *  joystick axes.
+ *
+ *  @param[in] cbfun The new callback, or `NULL` to remove the currently set
+ *  callback.
+ *  @return The previously set callback, or `NULL` if no callback was set or the
+ *  library had not been [initialized](@ref intro_init).
+ *
+ *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED.
+ *
+ *  @thread_safety This function must only be called from the main thread.
+ *
+ *  @sa @ref joystick_axis_event
+ *
+ *  @since Added in version 3.3cwb.
+ *
+ *  @ingroup input
+ */
+GLFWAPI GLFWjoyaxisfun glfwSetJoystickAxisCallback(GLFWjoyaxisfun cbfun);
+
+/*! @brief Sets the joystick button callback.
+ *
+ *  This function sets the joystick button callback, or removes the currently
+ *  set callback.  This is called when a joystick button is pressed or
+ *  released.
+ *
+ *  For joystick button events to be delivered on all platforms, you need to
+ *  call one of the [event processing](@ref events) functions, or query the
+ *  joystick buttons.
+ *
+ *  @param[in] cbfun The new callback, or `NULL` to remove the currently set
+ *  callback.
+ *  @return The previously set callback, or `NULL` if no callback was set or the
+ *  library had not been [initialized](@ref intro_init).
+ *
+ *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED.
+ *
+ *  @thread_safety This function must only be called from the main thread.
+ *
+ *  @sa @ref joystick_button_event
+ *
+ *  @since Added in version 3.3cwb.
+ *
+ *  @ingroup input
+ */
+GLFWAPI GLFWjoybuttonfun glfwSetJoystickButtonCallback(GLFWjoybuttonfun cbfun);
+
+/*! @brief Sets the joystick hat callback.
+ *
+ *  This function sets the joystick hat callback, or removes the currently
+ *  set callback.  This is called when a joystick hat is manipulated.
+ *
+ *  For joystick hat events to be delivered on all platforms, you need to
+ *  call one of the [event processing](@ref events) functions, or query the
+ *  joystick axes.
+ *
+ *  @param[in] cbfun The new callback, or `NULL` to remove the currently set
+ *  callback.
+ *  @return The previously set callback, or `NULL` if no callback was set or the
+ *  library had not been [initialized](@ref intro_init).
+ *
+ *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED.
+ *
+ *  @thread_safety This function must only be called from the main thread.
+ *
+ *  @sa @ref joystick_hat_event
+ *
+ *  @since Added in version 3.3cwb.
+ *
+ *  @ingroup input
+ */
+GLFWAPI GLFWjoyhatfun glfwSetJoystickHatCallback(GLFWjoyhatfun cbfun);
+
 /*! @brief Adds the specified SDL_GameControllerDB gamepad mappings.
  *
  *  This function parses the specified ASCII encoded string and updates the
@@ -5910,4 +6043,3 @@ GLFWAPI VkResult glfwCreateWindowSurface(VkInstance instance, GLFWwindow* window
 #endif
 
 #endif /* _glfw3_h_ */
-

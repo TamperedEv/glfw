@@ -131,7 +131,7 @@ static GLFWbool waitForX11Event(double* timeout)
 static GLFWbool waitForAnyEvent(double* timeout)
 {
     nfds_t count = 2;
-    struct pollfd fds[3] =
+    struct pollfd fds[3+GLFW_JOYSTICK_LAST] =
     {
         { ConnectionNumber(_glfw.x11.display), POLLIN },
         { _glfw.x11.emptyEventPipe[0], POLLIN }
@@ -140,6 +140,12 @@ static GLFWbool waitForAnyEvent(double* timeout)
 #if defined(__linux__)
     if (_glfw.linjs.inotify > 0)
         fds[count++] = (struct pollfd) { _glfw.linjs.inotify, POLLIN };
+    
+    for (int jid = 0;  jid <= GLFW_JOYSTICK_LAST;  jid++)
+    {
+        if (_glfw.joysticks[jid].present)
+            fds[count++] = (struct pollfd) { _glfw.joysticks[jid].linjs.fd, POLLIN };
+    }
 #endif
 
     while (!XPending(_glfw.x11.display))
@@ -2832,6 +2838,12 @@ void _glfwPlatformPollEvents(void)
 
 #if defined(__linux__)
     _glfwDetectJoystickConnectionLinux();
+
+    for (int jid = 0;  jid <= GLFW_JOYSTICK_LAST;  jid++)
+    {
+        if (_glfw.joysticks[jid].present)
+            _glfwPlatformPollJoystick(&_glfw.joysticks[jid], _GLFW_POLL_ALL);
+    }
 #endif
     XPending(_glfw.x11.display);
 
@@ -3227,4 +3239,3 @@ GLFWAPI const char* glfwGetX11SelectionString(void)
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     return getSelectionString(_glfw.x11.PRIMARY);
 }
-

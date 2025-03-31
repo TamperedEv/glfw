@@ -568,8 +568,11 @@ struct _GLFWlibrary
     } vk;
 
     struct {
-        GLFWmonitorfun  monitor;
-        GLFWjoystickfun joystick;
+        GLFWmonitorfun        monitor;
+        GLFWjoystickfun       joystick;
+        GLFWjoyaxisfun        joystickAxis;
+        GLFWjoybuttonfun      joystickButton;
+        GLFWjoyhatfun         joystickHat;
     } callbacks;
 
     // This is defined in the window API's platform.h
