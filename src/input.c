@@ -1274,21 +1274,21 @@ GLFWAPI GLFWjoystickfun glfwSetJoystickCallback(GLFWjoystickfun cbfun)
 GLFWAPI GLFWjoyaxisfun glfwSetJoystickAxisCallback(GLFWjoyaxisfun cbfun)
 {
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
-    _GLFW_SWAP_POINTERS(_glfw.callbacks.joystickAxis, cbfun);
+    _GLFW_SWAP(GLFWjoyaxisfun, _glfw.callbacks.joystickAxis, cbfun);
     return cbfun;
 }
 
 GLFWAPI GLFWjoybuttonfun glfwSetJoystickButtonCallback(GLFWjoybuttonfun cbfun)
 {
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
-    _GLFW_SWAP_POINTERS(_glfw.callbacks.joystickButton, cbfun);
+    _GLFW_SWAP(GLFWjoybuttonfun, _glfw.callbacks.joystickButton, cbfun);
     return cbfun;
 }
 
 GLFWAPI GLFWjoyhatfun glfwSetJoystickHatCallback(GLFWjoyhatfun cbfun)
 {
     _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
-    _GLFW_SWAP_POINTERS(_glfw.callbacks.joystickHat, cbfun);
+    _GLFW_SWAP(GLFWjoyhatfun, _glfw.callbacks.joystickHat, cbfun);
     return cbfun;
 }
 

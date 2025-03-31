@@ -2107,8 +2107,8 @@ void _glfwPollEventsWin32(void)
     int jid;
     for (jid = 0;  jid <= GLFW_JOYSTICK_LAST;  jid++)
     {
-        if (_glfw.joysticks[jid].present)
-            _glfwPlatformPollJoystick(&_glfw.joysticks[jid], _GLFW_POLL_ALL);
+        if (_glfw.joysticks[jid].connected)
+            _glfw.platform.pollJoystick(&_glfw.joysticks[jid], _GLFW_POLL_ALL);
     }
 
     while (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE))
