@@ -94,7 +94,7 @@ static GLFWbool waitForAnyEvent(double* timeout)
 
     for (int jid = 0;  jid <= GLFW_JOYSTICK_LAST;  jid++)
     {
-        if (_glfw.joysticks[jid].present)
+        if (_glfw.joysticks[jid].connected)
             fds[count++] = (struct pollfd) { _glfw.joysticks[jid].linjs.fd, POLLIN };
     }
 #endif
@@ -2803,8 +2803,8 @@ void _glfwPollEventsX11(void)
 
     for (int jid = 0;  jid <= GLFW_JOYSTICK_LAST;  jid++)
     {
-        if (_glfw.joysticks[jid].present)
-            _glfwPlatformPollJoystick(&_glfw.joysticks[jid], _GLFW_POLL_ALL);
+        if (_glfw.joysticks[jid].connected)
+        _glfw.platform.pollJoystick(&_glfw.joysticks[jid], _GLFW_POLL_ALL);
     }
 #endif
     XPending(_glfw.x11.display);
