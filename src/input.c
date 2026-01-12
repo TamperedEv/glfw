@@ -451,7 +451,7 @@ void _glfwInputJoystickButton(_GLFWjoystick* js, int button, char value)
 {
     assert(js != NULL);
     assert(button >= 0);
-    assert(button < js->buttonCount);
+    assert(button < js->buttonCount + js->hatCount*4);
     assert(value == GLFW_PRESS || value == GLFW_RELEASE);
 
     const int jid = (int) (js - _glfw.joysticks);
